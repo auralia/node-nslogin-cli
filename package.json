@@ -1,0 +1,50 @@
+{
+  "name": "nslogin-cli",
+  "version": "0.1.0",
+  "description": "CLI for logging into and restoring NationStates nations",
+  "keywords": [
+    "NationStates",
+    "login",
+    "restore",
+    "CTE",
+    "CLI"
+  ],
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Auralia",
+    "email": "railana-ns@outlook.com"
+  },
+  "files": [
+    "lib",
+    "CHANGES.md",
+    "LICENSE.md",
+    "NOTICE.md",
+    "package.json",
+    "README.md"
+  ],
+  "main": "./lib/cli.js",
+  "bin": {
+    "nslogin": "./bin/nslogin"
+  },
+  "typings": "./bin/cli",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/auralia/node-nslogin-cli.git"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.2.0",
+    "gulp-typescript": "^3.1.3",
+    "merge2": "^1.0.3",
+    "typescript": "^2.1.4"
+  },
+  "dependencies": {
+    "@types/argparse": "^1.0.30",
+    "@types/node": "^6.0.57",
+    "@types/winston": "0.0.32",
+    "argparse": "^1.0.9",
+    "es6-promise": "^4.0.5",
+    "nsweb": "0.1.1",
+    "winston": "^2.3.0"
+  }
+}
