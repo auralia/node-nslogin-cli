@@ -1,6 +1,6 @@
 {
   "name": "nslogin-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI for logging into and restoring NationStates nations",
   "keywords": [
     "NationStates",
@@ -15,6 +15,7 @@
     "email": "railana-ns@outlook.com"
   },
   "files": [
+    "bin",
     "lib",
     "CHANGES.md",
     "LICENSE.md",

@@ -26,7 +26,7 @@ import {log} from "winston";
 /**
  * The current version of nslogin-cli.
  */
-export const VERSION = "0.1.0";
+export const VERSION = "0.1.1";
 
 /**
  * Represents a nation name and associated password.
