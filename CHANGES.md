@@ -1,6 +1,6 @@
 ## 0.1.3 ##
 
-* Add auto move
+* Add auto mode
 * Improve login speed
 
 ## 0.1.2 ##
