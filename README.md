@@ -41,8 +41,10 @@ Positional arguments:
 Optional arguments:
   -h, --help           Show this help message and exit.
   -v, --version        Show program's version number and exit.
-  --mode MODE          Whether to log into or restore nations. The valid
-                       options are 'login' and 'restore'. Defaults to 'login'.
+  --mode MODE          Whether to log into nations, restore nations, or
+                       automatically log into or restore nations depending on
+                       whether they exist. The valid options are 'login',
+                       'restore', and 'auto'. Defaults to 'auto'.
   --encoding ENCODING  The encoding of the CSV file. Required by the Node.js
                        file system API. Defaults to 'utf8'.
   --verbose            Show detailed error output. This is disabled by

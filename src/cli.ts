@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import {ArgumentParser} from "argparse";
 import "es6-promise";
 import * as fs from "fs";
+import {NsApi} from "nsapi";
 import {NsWeb} from "nsweb";
 import * as os from "os";
 import {createInterface, ReadLine} from "readline";
@@ -26,7 +26,7 @@ import {log} from "winston";
 /**
  * The current version of nslogin-cli.
  */
-export const VERSION = "0.1.2";
+export const VERSION = "0.1.3";
 
 /**
  * Represents a nation name and associated password.
@@ -35,6 +35,12 @@ interface Credential {
     nation: string,
     password: string
 }
+
+const RESTORE_WARNING = "Please note that you will be asked to confirm each"
+                        + " nation restoration. This is required to satisfy"
+                        + " the 'one click per action' NationStates script"
+                        + " rule for actions that affect parts of"
+                        + " NationStates other than your own nation.";
 
 /**
  * Initializes the CLI interface.
@@ -53,12 +59,27 @@ export async function init(): Promise<void> {
             return;
         }
 
-        if (args.mode === "login") {
-            log("info", "Login mode");
-            await loginNations(args.userAgent, credentials, verbose);
-        } else {
-            log("info", "Restore mode");
-            await restoreNations(args.userAgent, credentials, verbose);
+        const api = new NsApi(args.userAgent);
+        const web = new NsWeb(args.userAgent);
+        try {
+            if (args.mode === "auto") {
+                log("info", "Auto mode");
+                log("info", RESTORE_WARNING);
+                await auto(api, web, credentials, verbose);
+            } else if (args.mode === "login") {
+                log("info", "Login mode");
+                await loginNations(api, credentials, verbose);
+            } else if (args.mode === "restore") {
+                log("info", "Restore mode");
+                log("info", RESTORE_WARNING);
+                await restoreNations(web, credentials, verbose);
+            } else {
+                log("error", "Unrecognized mode");
+            }
+        }
+        finally {
+            api.cleanup();
+            web.cleanup();
         }
     } catch (err) {
         log("error", "Unknown error occurred");
@@ -107,74 +128,90 @@ async function getCredentials(path: string,
 }
 
 /**
+ * Logs into or restores the nations given by the specified credentials
+ * depending on whether they currently exist.
+ *
+ * @param api The NsApi instance to use.
+ * @param web The NsWeb instance to use.
+ * @param credentials The names and passwords of the nations to log into or
+ *                    restore.
+ * @param verbose Whether or not to print out detailed error messages.
+ */
+async function auto(api: NsApi, web: NsWeb, credentials: Credential[],
+                    verbose: boolean): Promise<void> {
+    for (const credential of credentials) {
+        let login = true;
+        try {
+            log("info", `${credential.nation}: Nation exists`);
+            await api.nationRequest(credential.nation, ["name"]);
+        } catch (_) {
+            log("info", `${credential.nation}: Nation does not exist`);
+            login = false;
+        }
+        if (login) {
+            await loginNations(api, [credential], verbose);
+        } else {
+            await restoreNations(web, [credential], verbose);
+        }
+    }
+}
+
+/**
  * Logs into the nations given by the specified credentials.
  *
- * @param userAgent The user agent to use when contacting NationStates.
+ * @param api The NsApi instance to use.
  * @param credentials The specified credentials.
  * @param verbose Whether error messages should be printed out.
  */
-async function loginNations(userAgent: string,
+async function loginNations(api: NsApi,
                             credentials: Credential[],
                             verbose: boolean): Promise<void> {
-    const web = new NsWeb(userAgent);
-    try {
-        for (const credential of credentials) {
-            try {
-                await web.loginRequest(credential.nation, credential.password);
-                log("info", `${credential.nation}: Login successful`);
-            } catch (err) {
-                log("error", `${credential.nation}: Login failed`);
-                if (verbose) {
-                    log("error", util.inspect(err));
-                }
+    for (const credential of credentials) {
+        try {
+            await api.nationRequest(credential.nation, ["notices"],
+                                    undefined, {password: credential.password});
+            log("info", `${credential.nation}: Login successful`);
+        } catch (err) {
+            log("error", `${credential.nation}: Login failed`);
+            if (verbose) {
+                log("error", util.inspect(err));
             }
         }
-    } finally {
-        web.cleanup();
     }
 }
 
 /**
  * Restores the nations given by the specified credentials.
  *
- * @param userAgent The user agent to use when contacting NationStates.
+ * @param web The NsWeb instance to use.
  * @param credentials The specified credentials.
  * @param verbose Whether error messages should be printed out.
  */
-async function restoreNations(userAgent: string,
+async function restoreNations(web: NsWeb,
                               credentials: Credential[],
                               verbose: boolean): Promise<void> {
-    const web = new NsWeb(userAgent);
+    const readLine = createInterface({
+                                         input: process.stdin,
+                                         output: process.stdout
+                                     });
     try {
-        const readLine = createInterface({
-                                             input: process.stdin,
-                                             output: process.stdout
-                                         });
-        try {
-            log("info", "Please note that you will be asked to confirm the"
-                        + " restoration of each nation. This is required to"
-                        + " satisfy the 'one click per action' NationStates"
-                        + " script rule for actions that affect parts of"
-                        + " NationStates other than your own nation.");
-            for (const credential of credentials) {
-                await question(readLine, `Press the ENTER key to restore`
-                                         + ` ${credential.nation}...`);
-                try {
-                    await web.restoreRequest(credential.nation,
-                                             credential.password);
-                    log("info", `${credential.nation}: Restore successful`);
-                } catch (err) {
-                    log("error", `${credential.nation}: Restore failed`);
-                    if (verbose) {
-                        log("error", util.inspect(err));
-                    }
+
+        for (const credential of credentials) {
+            await question(readLine, `Press the ENTER key to restore`
+                                     + ` ${credential.nation}...`);
+            try {
+                await web.restoreRequest(credential.nation,
+                                         credential.password);
+                log("info", `${credential.nation}: Restore successful`);
+            } catch (err) {
+                log("error", `${credential.nation}: Restore failed`);
+                if (verbose) {
+                    log("error", util.inspect(err));
                 }
             }
-        } finally {
-            readLine.close();
         }
     } finally {
-        web.cleanup();
+        readLine.close();
     }
 }
 
@@ -223,10 +260,12 @@ function parseArgs(): any {
     });
 
     parser.addArgument(["--mode"], {
-        choices: ["login", "restore"],
-        defaultValue: "login",
-        help: "Whether to log into or restore nations. The valid options are"
-              + " 'login' and 'restore'. Defaults to 'login'.",
+        choices: ["login", "restore", "auto"],
+        defaultValue: "auto",
+        help: "Whether to log into nations, restore nations, or automatically"
+              + " log into or restore nations depending on whether they exist."
+              + " The valid options are 'login', 'restore', and 'auto'."
+              + " Defaults to 'auto'.",
         metavar: "MODE"
     });
     parser.addArgument(["--encoding"], {
