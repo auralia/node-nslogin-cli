@@ -1,3 +1,8 @@
+## 0.1.3 ##
+
+* Add auto move
+* Improve login speed
+
 ## 0.1.2 ##
 
 * Bug fixes
