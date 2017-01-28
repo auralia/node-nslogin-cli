@@ -195,7 +195,6 @@ async function restoreNations(web: NsWeb,
                                          output: process.stdout
                                      });
     try {
-
         for (const credential of credentials) {
             await question(readLine, `Press the ENTER key to restore`
                                      + ` ${credential.nation}...`);
