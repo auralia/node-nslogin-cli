@@ -26,7 +26,7 @@ import {log} from "winston";
 /**
  * The current version of nslogin-cli.
  */
-export const VERSION = "0.1.3";
+export const VERSION = "0.1.4";
 
 /**
  * Represents a nation name and associated password.
@@ -168,8 +168,8 @@ async function loginNations(api: NsApi,
                             verbose: boolean): Promise<void> {
     for (const credential of credentials) {
         try {
-            await api.nationRequest(credential.nation, ["notices"],
-                                    undefined, {password: credential.password});
+            await api.nationRequest(credential.nation, ["nextissuetime"],
+                                    {}, {password: credential.password}, true);
             log("info", `${credential.nation}: Login successful`);
         } catch (err) {
             log("error", `${credential.nation}: Login failed`);

@@ -1,6 +1,6 @@
 {
   "name": "nslogin-cli",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "CLI for logging into and restoring NationStates nations",
   "keywords": [
     "NationStates",
@@ -35,19 +35,19 @@
   "devDependencies": {
     "del": "^2.2.2",
     "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^2.4.0",
-    "gulp-typescript": "^3.1.4",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-typescript": "^3.1.5",
     "merge2": "^1.0.3",
-    "typescript": "^2.1.5"
+    "typescript": "^2.2.1"
   },
   "dependencies": {
     "@types/argparse": "^1.0.30",
-    "@types/node": "^7.0.4",
+    "@types/node": "^7.0.5",
     "@types/winston": "2.2.0",
     "argparse": "^1.0.9",
     "es6-promise": "^4.0.5",
-    "nsapi": "^0.1.12",
-    "nsweb": "0.1.1",
+    "nsapi": "^0.1.13",
+    "nsweb": "0.2.0",
     "winston": "^2.3.1"
   }
 }
