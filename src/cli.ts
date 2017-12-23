@@ -107,8 +107,12 @@ async function getCredentials(path: string,
     const credentials: Credential[] = [];
     const lines = text.split(os.EOL);
     for (let i = 0; i < lines.length; i++) {
-        // Ignore empty lines or lines just containing whitespace
-        if (lines[i].trim() === "") {
+        // Ignore empty lines, lines just containing whitespace, or lines
+        // starting with a comment
+        const trimmedLine = lines[i].trim();
+        if (trimmedLine === "" || trimmedLine.charAt(0) === "#"
+            || trimmedLine.charAt(0) === ";")
+        {
             continue;
         }
         const tuple = lines[i].split(",");
