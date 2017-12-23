@@ -1,6 +1,7 @@
 ## 0.1.5 ##
 
 * Update packages
+* Add support for comments
 
 ## 0.1.4 ##
 
