@@ -18,7 +18,6 @@
 
 var del = require("del");
 var gulp = require("gulp");
-var merge2 = require("merge2");
 var sourcemaps = require("gulp-sourcemaps");
 var typescript = require("gulp-typescript");
 

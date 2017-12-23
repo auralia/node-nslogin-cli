@@ -1,6 +1,6 @@
 {
   "name": "nslogin-cli",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "CLI for logging into and restoring NationStates nations",
   "keywords": [
     "NationStates",
@@ -33,21 +33,20 @@
     "url": "git://github.com/auralia/node-nslogin-cli.git"
   },
   "devDependencies": {
-    "del": "^2.2.2",
+    "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-sourcemaps": "^2.4.1",
-    "gulp-typescript": "^3.1.5",
-    "merge2": "^1.0.3",
-    "typescript": "^2.2.1"
+    "gulp-sourcemaps": "^2.6.2",
+    "gulp-typescript": "^3.2.3",
+    "typescript": "^2.6.2"
   },
   "dependencies": {
-    "@types/argparse": "^1.0.30",
-    "@types/node": "^7.0.5",
-    "@types/winston": "2.2.0",
+    "@types/argparse": "^1.0.33",
+    "@types/node": "^8.5.2",
+    "@types/winston": "2.3.7",
     "argparse": "^1.0.9",
-    "es6-promise": "^4.0.5",
-    "nsapi": "^0.1.13",
-    "nsweb": "0.2.0",
-    "winston": "^2.3.1"
+    "es6-promise": "^4.2.2",
+    "nsapi": "^0.1.14",
+    "nsweb": "0.2.1",
+    "winston": "^2.4.0"
   }
 }
