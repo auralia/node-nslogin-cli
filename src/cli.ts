@@ -173,7 +173,7 @@ async function loginNations(api: NsApi,
     for (const credential of credentials) {
         try {
             await api.nationRequest(credential.nation,
-                                    ["nextissuetime"],
+                                    ["ping"],
                                     {},
                                     {password: credential.password},
                                     true);
